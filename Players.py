@@ -181,13 +181,51 @@ class MachineLearningPlayer(Player):
         item = self.w_choice(self.opponentPlays)
         return item   
 
+
+#tit for tat player
+class MarkovPlayer(Player):
     '''
+     does last one's move
+    '''
+
+    def __init__( self ): 
+        self.opponentPlays = []
+        self.tableofItems = {} 
+            
+        return
+         
+     #get the last opponent choice
+    def LastOpponentChoice(self, action):
+      
+        #get clear previous
+        self.tableofItems = {}
+        play = []
+        self.opponentPlays.append(action) 
+        
+        #take all these actions and make a table of 3-ples
+        counter = 0
+        for i in self.opponentPlays:
+            play = self.opponentPlays[counter:counter+3]
+            if len(play) >= 3:
+                self.tableofItems[(play[0], play[1])] = (play[2], .01)
+            counter +=1
+
+    def go(self): 
+        
+      lastTwoPlays = self.opponentPlays[-2:]
+      
+      if len(lastTwoPlays) >=2:
+          
+          tuplev = (lastTwoPlays[0], lastTwoPlays[1])
+          
+          #length of item is 3
+          if len(self.tableofItems):
+              #there's a bug here , need to do probabilty
+              getNextMove = self.tableofItems.get(tuplev)
+              if getNextMove != None:
+                  return getNextMove[0]
+        
+      return 'R'
+
+   
  
-     
-    
-    (optional for beginners)
-    
-    MLPlayer -- uses simple machine learning to estimate probability of next move
-    
-    MarkovPlayer -- uses Markov processes to estimate sequence of moves for the opponent    
-    '''
